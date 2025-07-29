@@ -19,13 +19,12 @@ const EbookSection = () => {
     // Track the click
     trackClick(ebookTitle);
     
-    // Special handling for first ebook (Bulking Diet & Workout Book)
-    if (ebookId === 1) {
-      navigate('/ebook-download');
-      return;
-    }
+    // Redirect to WhatsApp contact for all ebooks
+    const whatsappNumber = "01913040226";
+    const message = encodeURIComponent(`Hi! I'm interested in purchasing the "${ebookTitle}". Can you help me with the details?`);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
     
-    alert(`Purchasing ${ebookTitle}. This will redirect to SSL commerce payment gateway and after payment confirmation, customer will see a thank you page and the ebook will start downloading! 📚`);
+    window.open(whatsappUrl, '_blank');
   };
 
   const ebooks = [

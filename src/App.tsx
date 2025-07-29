@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useLocomotiveScroll } from "@/hooks/useLocomotiveScroll";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import EbookDownload from "./pages/EbookDownload";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +17,6 @@ const AppContent = () => {
     <div ref={scrollRef} data-scroll-container>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/ebook-download" element={<EbookDownload />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
