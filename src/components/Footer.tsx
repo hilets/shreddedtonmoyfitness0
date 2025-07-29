@@ -54,6 +54,7 @@ const Footer = () => {
               <li><a href="#" className="hover:text-[#E63946] transition-colors">About</a></li>
               <li><a href="#" className="hover:text-[#E63946] transition-colors">Testimonials</a></li>
               <li><a href="#" className="hover:text-[#E63946] transition-colors">Contact</a></li>
+              <li><a href="/terms" className="hover:text-[#E63946] transition-colors">Terms & Conditions</a></li>
             </ul>
           </div>
           
@@ -91,7 +92,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
             <p className="text-[#D3D3D3] text-sm">
-              © 2024 Shredded Tonmoy Fitness. All rights reserved.
+              © 2024 Shredded Tonmoy Fitness. All rights reserved. Design by Jahin.
             </p>
           </div>
           
