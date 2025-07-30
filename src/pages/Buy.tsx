@@ -22,6 +22,10 @@ const Buy = () => {
     }
   }, [itemName, price, navigate]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const bkashNumber = "01911077020";
   const whatsappNumber = "+880 1911-077020";
 
