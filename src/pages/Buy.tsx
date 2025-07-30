@@ -110,9 +110,9 @@ const Buy = () => {
                   <span className="text-white font-medium">bKash Number:</span>
                   <Button
                     onClick={() => copyToClipboard(bkashNumber)}
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
-                    className="text-white border-white/30 hover:bg-white/10"
+                    className="text-white border border-white/30 hover:bg-white/10 bg-transparent"
                   >
                     {copied ? (
                       <CheckCircle className="h-4 w-4 mr-2 text-green-400" />
