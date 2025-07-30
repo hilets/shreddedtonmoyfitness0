@@ -23,7 +23,7 @@ const Buy = () => {
   }, [itemName, price, navigate]);
 
   const bkashNumber = "01911077020";
-  const whatsappNumber = "01911077020";
+  const whatsappNumber = "+880 1911-077020";
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -152,7 +152,6 @@ const Buy = () => {
               >
                 <MessageCircle className="h-6 w-6" />
                 Send Payment Screenshot via WhatsApp
-                <Phone className="h-5 w-5" />
               </Button>
 
               <div className="bg-green-500/20 rounded-xl p-4 border border-green-500/30">
