@@ -13,7 +13,13 @@ const FeaturedBooks = () => {
   const handleBuyNow = (programTitle: string) => {
     // Track the click
     trackClick(programTitle);
-    alert("This Button will Bring you SSL commerce payment gateway and after Confirm payment Customer will see a thank you page and Book will start to be download🥰");
+    
+    // Redirect to WhatsApp contact
+    const whatsappNumber = "8801911077020";
+    const message = encodeURIComponent(`Hi! I'm interested in purchasing the "${programTitle}". Can you help me with the details?`);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+    
+    window.open(whatsappUrl, '_blank');
   };
 
   const toggleBenefits = (bookId: number) => {
