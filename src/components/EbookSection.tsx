@@ -19,12 +19,13 @@ const EbookSection = () => {
     // Track the click
     trackClick(ebookTitle);
     
-    // Redirect to WhatsApp contact for all ebooks
-    const whatsappNumber = "8801911077020";
-    const message = encodeURIComponent(`Hi! I'm interested in purchasing the "${ebookTitle}". Can you help me with the details?`);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+    // Find the ebook details
+    const ebook = ebooks.find(e => e.id === ebookId);
+    if (!ebook) return;
     
-    window.open(whatsappUrl, '_blank');
+    // Navigate to buy page with ebook details
+    const buyUrl = `/buy?item=${encodeURIComponent(ebookTitle)}&price=${encodeURIComponent(ebook.price)}&originalPrice=${encodeURIComponent(ebook.originalPrice)}&type=ebook`;
+    navigate(buyUrl);
   };
 
   const ebooks = [

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,17 +10,19 @@ import { useCurrencyByLocation } from "@/hooks/useCurrencyByLocation";
 const FeaturedBooks = () => {
   const [showBenefits, setShowBenefits] = useState<{[key: number]: boolean}>({});
   const { formatPrice, currencyData, getCurrencyDisplayName, isLoading } = useCurrencyByLocation();
+  const navigate = useNavigate();
 
-  const handleBuyNow = (programTitle: string) => {
+  const handleBuyNow = (programTitle: string, programId: number) => {
     // Track the click
     trackClick(programTitle);
     
-    // Redirect to WhatsApp contact
-    const whatsappNumber = "8801911077020";
-    const message = encodeURIComponent(`Hi! I'm interested in purchasing the "${programTitle}". Can you help me with the details?`);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+    // Find the program details
+    const program = books.find(p => p.id === programId);
+    if (!program) return;
     
-    window.open(whatsappUrl, '_blank');
+    // Navigate to buy page with program details
+    const buyUrl = `/buy?item=${encodeURIComponent(programTitle)}&price=${encodeURIComponent(program.price)}&originalPrice=${encodeURIComponent(program.originalPrice)}&type=program`;
+    navigate(buyUrl);
   };
 
   const toggleBenefits = (bookId: number) => {
@@ -193,7 +196,7 @@ const FeaturedBooks = () => {
                         </span>
                       </div>
                       <Button 
-                        onClick={() => handleBuyNow(book.title)}
+                        onClick={() => handleBuyNow(book.title, book.id)}
                         className="w-full text-white font-semibold py-3 text-lg transition-all duration-300 transform hover:scale-105 rounded-2xl"
                         style={{ backgroundColor: '#E63946' }}
                       >

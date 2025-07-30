@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useLocomotiveScroll } from "@/hooks/useLocomotiveScroll";
 import Index from "./pages/Index";
+import Buy from "./pages/Buy";
 import NotFound from "./pages/NotFound";
 import TermsAndConditions from "./pages/TermsAndConditions";
 
@@ -18,6 +19,7 @@ const AppContent = () => {
     <div ref={scrollRef} data-scroll-container>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/buy" element={<Buy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
