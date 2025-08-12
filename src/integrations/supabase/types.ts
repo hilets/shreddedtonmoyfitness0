@@ -14,13 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clicks: {
+        Row: {
+          clicked_at: string
+          created_at: string
+          date: string
+          device_fingerprint: string
+          element_id: string | null
+          element_name: string
+          element_type: string
+          id: string
+          ip_address: unknown | null
+          page_url: string | null
+        }
+        Insert: {
+          clicked_at?: string
+          created_at?: string
+          date?: string
+          device_fingerprint: string
+          element_id?: string | null
+          element_name: string
+          element_type: string
+          id?: string
+          ip_address?: unknown | null
+          page_url?: string | null
+        }
+        Update: {
+          clicked_at?: string
+          created_at?: string
+          date?: string
+          device_fingerprint?: string
+          element_id?: string | null
+          element_name?: string
+          element_type?: string
+          id?: string
+          ip_address?: unknown | null
+          page_url?: string | null
+        }
+        Relationships: []
+      }
+      daily_stats: {
+        Row: {
+          date: string
+          ebook_clicks: number
+          id: string
+          program_clicks: number
+          total_clicks: number
+          unique_visitors: number
+          updated_at: string
+        }
+        Insert: {
+          date?: string
+          ebook_clicks?: number
+          id?: string
+          program_clicks?: number
+          total_clicks?: number
+          unique_visitors?: number
+          updated_at?: string
+        }
+        Update: {
+          date?: string
+          ebook_clicks?: number
+          id?: string
+          program_clicks?: number
+          total_clicks?: number
+          unique_visitors?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      visitors: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string
+          date: string
+          device_fingerprint: string
+          first_visit_at: string
+          id: string
+          ip_address: unknown | null
+          last_visit_at: string
+          page_url: string | null
+          referrer: string | null
+          user_agent: string | null
+          visit_count: number
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date?: string
+          device_fingerprint: string
+          first_visit_at?: string
+          id?: string
+          ip_address?: unknown | null
+          last_visit_at?: string
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+          visit_count?: number
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date?: string
+          device_fingerprint?: string
+          first_visit_at?: string
+          id?: string
+          ip_address?: unknown | null
+          last_visit_at?: string
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+          visit_count?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_daily_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
