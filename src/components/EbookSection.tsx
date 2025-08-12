@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, Clock, BookOpen, Zap, Target, HelpCircle, ArrowRight } from "lucide-react";
-import { trackClick } from "@/utils/clickStatsTracker";
+import { trackClick } from "@/utils/trackingUtils";
 import { useCurrencyByLocation } from "@/hooks/useCurrencyByLocation";
 import { useLogoClickTracker } from "@/hooks/useLogoClickTracker";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const EbookSection = () => {
 
   const handleBuyNow = (ebookTitle: string, ebookId: number) => {
     // Track the click
-    trackClick(ebookTitle);
+    trackClick('ebook', ebookTitle, `ebook-${ebookId}`);
     
     // Find the ebook details
     const ebook = ebooks.find(e => e.id === ebookId);

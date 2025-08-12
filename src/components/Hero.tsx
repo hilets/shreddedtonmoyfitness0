@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Flame } from "lucide-react";
 import { useState, useEffect } from "react";
+import { trackClick } from "@/utils/trackingUtils";
 
 const Hero = () => {
   const [displayText, setDisplayText] = useState("");
@@ -22,10 +23,12 @@ const Hero = () => {
   }, []);
 
   const scrollToEbooks = () => {
+    trackClick('navigation', 'View Our Ebooks', 'hero-ebooks-btn');
     document.getElementById('ebooks')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const scrollToPrograms = () => {
+    trackClick('navigation', 'View Programs', 'hero-programs-btn');
     document.getElementById('featured-books')?.scrollIntoView({ behavior: 'smooth' });
   };
 

@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react';
 import Hero from "@/components/Hero";
 import EbookSection from "@/components/EbookSection";
 import FeaturedBooks from "@/components/FeaturedBooks";
@@ -10,8 +11,14 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import MobileNav from "@/components/MobileNav";
 import DesktopNav from "@/components/DesktopNav";
+import AdminStatsPanel from "@/components/AdminStatsPanel";
+import { trackVisitor } from "@/utils/trackingUtils";
 
 const Index = () => {
+  useEffect(() => {
+    trackVisitor();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
       <MobileNav />
@@ -43,6 +50,7 @@ const Index = () => {
       <div data-scroll-section>
         <Footer />
       </div>
+      <AdminStatsPanel />
     </div>
   );
 };

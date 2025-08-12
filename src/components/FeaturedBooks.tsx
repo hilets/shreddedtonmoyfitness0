@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, Clock, Users, Trophy, Target, Dumbbell, CheckCircle, ArrowLeft } from "lucide-react";
-import { trackClick } from "@/utils/clickStatsTracker";
+import { trackClick } from "@/utils/trackingUtils";
 import { useCurrencyByLocation } from "@/hooks/useCurrencyByLocation";
 
 const FeaturedBooks = () => {
@@ -14,7 +14,7 @@ const FeaturedBooks = () => {
 
   const handleBuyNow = (programTitle: string, programId: number) => {
     // Track the click
-    trackClick(programTitle);
+    trackClick('program', programTitle, `program-${programId}`);
     
     // Find the program details
     const program = books.find(p => p.id === programId);
