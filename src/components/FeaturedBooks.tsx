@@ -40,7 +40,7 @@ const FeaturedBooks = () => {
       price: "30000৳",
       originalPrice: "35000৳",
       package: "12 weeks (At least 3 months)",
-      image: "/lovable-uploads/9380bf41-09d2-41c5-8ece-7f4b167128f7.png",
+      image: "/src/assets/new-program-image.jpg",
       rating: 4.9,
       downloads: "200+",
       badge: "Premium",
