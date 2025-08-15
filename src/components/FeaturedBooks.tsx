@@ -40,7 +40,7 @@ const FeaturedBooks = () => {
       price: "30000৳",
       originalPrice: "35000৳",
       package: "12 weeks (At least 3 months)",
-      image: "/src/assets/new-program-image.jpg",
+      image: "https://res.cloudinary.com/dvdtkzhzt/image/upload/v1755260179/IMG_20250815_181436_lf2i1z.jpg",
       rating: 4.9,
       downloads: "200+",
       badge: "Premium",
