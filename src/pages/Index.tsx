@@ -11,7 +11,7 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import MobileNav from "@/components/MobileNav";
 import DesktopNav from "@/components/DesktopNav";
-import AdminStatsPanel from "@/components/AdminStatsPanel";
+
 import { trackVisitor } from "@/utils/trackingUtils";
 
 const Index = () => {
@@ -50,7 +50,7 @@ const Index = () => {
       <div data-scroll-section>
         <Footer />
       </div>
-      <AdminStatsPanel />
+      
     </div>
   );
 };

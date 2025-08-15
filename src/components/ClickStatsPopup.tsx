@@ -1,114 +1,86 @@
 
-import React from 'react';
-import { X, TrendingUp, MousePointer, Zap, Users, Trash2, BookOpen } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, TrendingUp, MousePointer, Zap, Users, Trash2, BookOpen, Calendar, BarChart3 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getTodayStats, getAnalyticsData } from "@/utils/trackingUtils";
 
 interface ClickStatsPopupProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface ClickStats {
-  'Online Contest Prep Program': number;
-  'Bulking Diet & Workout Book': number;
-  'Cutting Diet & Workout Book': number;
-  '90 Days Transformation Challenge': number;
+interface DailyStats {
+  unique_visitors: number;
+  total_clicks: number;
+  program_clicks: number;
+  ebook_clicks: number;
+  date: string;
 }
 
 const ClickStatsPopup: React.FC<ClickStatsPopupProps> = ({ isOpen, onClose }) => {
-  // Get today's date as a key
-  const today = new Date().toDateString();
-  
-  // Get click stats from localStorage
-  const getClickStats = (): ClickStats => {
-    const stats = localStorage.getItem(`clickStats_${today}`);
-    return stats ? JSON.parse(stats) : {
-      'Online Contest Prep Program': 0,
-      'Bulking Diet & Workout Book': 0,
-      'Cutting Diet & Workout Book': 0,
-      '90 Days Transformation Challenge': 0
-    };
-  };
+  const [todayStats, setTodayStats] = useState<DailyStats>({
+    unique_visitors: 0,
+    total_clicks: 0,
+    program_clicks: 0,
+    ebook_clicks: 0,
+    date: new Date().toISOString().split('T')[0]
+  });
+  const [weeklyStats, setWeeklyStats] = useState<DailyStats[]>([]);
+  const [monthlyStats, setMonthlyStats] = useState<DailyStats[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Get visitor count from localStorage
-  const getVisitorCount = (): number => {
-    const count = localStorage.getItem(`visitorCount_${today}`);
-    return count ? parseInt(count) : 0;
-  };
+  const loadStats = async () => {
+    try {
+      setLoading(true);
+      
+      // Get today's stats
+      const today = await getTodayStats();
+      setTodayStats(today);
 
-  // Track unique visitor
-  const trackVisitor = () => {
-    const sessionKey = `hasVisited_${today}`;
-    const hasVisitedToday = sessionStorage.getItem(sessionKey);
-    
-    if (!hasVisitedToday) {
-      const currentCount = getVisitorCount();
-      localStorage.setItem(`visitorCount_${today}`, (currentCount + 1).toString());
-      sessionStorage.setItem(sessionKey, 'true');
+      // Get last 7 days stats
+      const endDate = new Date().toISOString().split('T')[0];
+      const startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const weekly = await getAnalyticsData(startDate, endDate);
+      setWeeklyStats(weekly);
+
+      // Get last 30 days stats
+      const monthStartDate = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const monthly = await getAnalyticsData(monthStartDate, endDate);
+      setMonthlyStats(monthly);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Track visitor on component mount
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
-      trackVisitor();
+      loadStats();
     }
   }, [isOpen]);
 
-  // Clear all today's data
-  const clearTodayData = () => {
-    localStorage.removeItem(`clickStats_${today}`);
-    localStorage.removeItem(`visitorCount_${today}`);
-    sessionStorage.removeItem(`hasVisited_${today}`);
-    // Force re-render by closing and reopening
-    onClose();
-    setTimeout(() => {
-      // This will trigger the popup to show updated (cleared) data
-    }, 100);
+  const calculateTotal = (stats: DailyStats[], field: keyof DailyStats): number => {
+    return stats.reduce((total, day) => total + (day[field] as number), 0);
   };
 
-  const clickStats = getClickStats();
-  const visitorCount = getVisitorCount();
-  const totalClicks = Object.values(clickStats).reduce((sum: number, count: number) => sum + count, 0);
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
 
-  const programs = [
-    {
-      name: 'Online Contest Prep Program' as keyof ClickStats,
-      icon: <TrendingUp className="h-5 w-5 text-[#E63946]" />,
-      color: 'from-red-500/20 to-red-600/20',
-      borderColor: 'border-red-500/30'
-    }
-  ];
-
-  const ebooks = [
-    {
-      name: 'Bulking Diet & Workout Book' as keyof ClickStats,
-      icon: <BookOpen className="h-5 w-5 text-[#FF6B35]" />,
-      color: 'from-orange-500/20 to-orange-600/20',
-      borderColor: 'border-orange-500/30'
-    },
-    {
-      name: 'Cutting Diet & Workout Book' as keyof ClickStats,
-      icon: <BookOpen className="h-5 w-5 text-[#4ECDC4]" />,
-      color: 'from-teal-500/20 to-teal-600/20',
-      borderColor: 'border-teal-500/30'
-    },
-    {
-      name: '90 Days Transformation Challenge' as keyof ClickStats,
-      icon: <BookOpen className="h-5 w-5 text-[#9B59B6]" />,
-      color: 'from-purple-500/20 to-purple-600/20',
-      borderColor: 'border-purple-500/30'
-    }
-  ];
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-6 max-w-md w-full mx-4 border border-[#333] shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-6 max-w-4xl w-full mx-4 border border-[#333] shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 bg-[#2A2A2A] hover:bg-[#E63946] text-white rounded-full p-2 transition-all duration-200 hover:scale-110"
+          className="absolute top-4 right-4 bg-[#2A2A2A] hover:bg-[#E63946] text-white rounded-full p-2 transition-all duration-200 hover:scale-110 z-10"
         >
           <X className="h-4 w-4" />
         </button>
@@ -116,122 +88,204 @@ const ClickStatsPopup: React.FC<ClickStatsPopupProps> = ({ isOpen, onClose }) =>
         {/* Header */}
         <div className="text-center mb-6">
           <div className="bg-gradient-to-r from-[#E63946] to-[#FFD700] bg-clip-text text-transparent">
-            <h2 className="text-2xl font-bold font-orbitron">Today's Activity</h2>
+            <h2 className="text-3xl font-bold font-orbitron">Website Analytics</h2>
           </div>
           <p className="text-[#D3D3D3] text-sm mt-2 font-inter">
-            Analytics for {new Date().toLocaleDateString()}
+            Real-time tracking dashboard
           </p>
         </div>
 
-        {/* Visitor Counter Card */}
-        <div className="bg-gradient-to-r from-[#28A745]/10 to-[#20C997]/10 rounded-2xl p-4 mb-4 border border-[#28A745]/20">
-          <div className="flex items-center justify-center gap-3">
-            <div className="bg-[#2A2A2A] rounded-lg p-2">
-              <Users className="h-5 w-5 text-[#28A745]" />
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white font-orbitron">
-                {visitorCount}
-              </div>
-              <div className="text-[#D3D3D3] text-sm">Website Visitors Today</div>
-            </div>
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E63946] mx-auto"></div>
+            <p className="text-[#D3D3D3] mt-4">Loading analytics...</p>
           </div>
-        </div>
+        ) : (
+          <Tabs defaultValue="today" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 bg-[#2A2A2A] rounded-xl">
+              <TabsTrigger value="today" className="text-white data-[state=active]:bg-[#E63946]">
+                Today
+              </TabsTrigger>
+              <TabsTrigger value="weekly" className="text-white data-[state=active]:bg-[#E63946]">
+                7 Days
+              </TabsTrigger>
+              <TabsTrigger value="monthly" className="text-white data-[state=active]:bg-[#E63946]">
+                30 Days
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Program Stats */}
-        <div className="space-y-3 mb-6">
-          <h3 className="text-lg font-semibold text-white font-orbitron mb-3">Programs</h3>
-          {programs.map((program, index) => (
-            <div
-              key={program.name}
-              className={`bg-gradient-to-r ${program.color} rounded-xl p-3 border ${program.borderColor} hover:scale-105 transition-all duration-200`}
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-[#2A2A2A] rounded-lg p-2">
-                    {program.icon}
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold text-sm font-inter">
-                      {program.name}
+            <TabsContent value="today" className="mt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-gradient-to-r from-[#28A745]/10 to-[#20C997]/10 rounded-xl p-4 border border-[#28A745]/20">
+                  <div className="text-center">
+                    <Users className="h-8 w-8 text-[#28A745] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {todayStats.unique_visitors}
                     </div>
+                    <div className="text-[#D3D3D3] text-xs">Unique Visitors</div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-white font-orbitron">
-                    {clickStats[program.name] || 0}
+                
+                <div className="bg-gradient-to-r from-[#E63946]/10 to-[#FFD700]/10 rounded-xl p-4 border border-[#E63946]/20">
+                  <div className="text-center">
+                    <MousePointer className="h-8 w-8 text-[#E63946] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {todayStats.total_clicks}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Total Clicks</div>
                   </div>
-                  <div className="text-xs text-[#D3D3D3]">clicks</div>
+                </div>
+
+                <div className="bg-gradient-to-r from-[#FF6B35]/10 to-[#F7931E]/10 rounded-xl p-4 border border-[#FF6B35]/20">
+                  <div className="text-center">
+                    <TrendingUp className="h-8 w-8 text-[#FF6B35] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {todayStats.program_clicks}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Program Clicks</div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-[#9B59B6]/10 to-[#8E44AD]/10 rounded-xl p-4 border border-[#9B59B6]/20">
+                  <div className="text-center">
+                    <BookOpen className="h-8 w-8 text-[#9B59B6] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {todayStats.ebook_clicks}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Ebook Clicks</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            </TabsContent>
 
-        {/* Ebook Stats */}
-        <div className="space-y-3 mb-6">
-          <h3 className="text-lg font-semibold text-white font-orbitron mb-3">Ebooks</h3>
-          {ebooks.map((ebook, index) => (
-            <div
-              key={ebook.name}
-              className={`bg-gradient-to-r ${ebook.color} rounded-xl p-3 border ${ebook.borderColor} hover:scale-105 transition-all duration-200`}
-              style={{ animationDelay: `${(index + programs.length) * 100}ms` }}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-[#2A2A2A] rounded-lg p-2">
-                    {ebook.icon}
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold text-sm font-inter">
-                      {ebook.name}
+            <TabsContent value="weekly" className="mt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-gradient-to-r from-[#28A745]/10 to-[#20C997]/10 rounded-xl p-4 border border-[#28A745]/20">
+                  <div className="text-center">
+                    <Users className="h-8 w-8 text-[#28A745] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(weeklyStats, 'unique_visitors')}
                     </div>
+                    <div className="text-[#D3D3D3] text-xs">Weekly Visitors</div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-white font-orbitron">
-                    {clickStats[ebook.name] || 0}
+                
+                <div className="bg-gradient-to-r from-[#E63946]/10 to-[#FFD700]/10 rounded-xl p-4 border border-[#E63946]/20">
+                  <div className="text-center">
+                    <MousePointer className="h-8 w-8 text-[#E63946] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(weeklyStats, 'total_clicks')}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Weekly Clicks</div>
                   </div>
-                  <div className="text-xs text-[#D3D3D3]">clicks</div>
+                </div>
+
+                <div className="bg-gradient-to-r from-[#FF6B35]/10 to-[#F7931E]/10 rounded-xl p-4 border border-[#FF6B35]/20">
+                  <div className="text-center">
+                    <TrendingUp className="h-8 w-8 text-[#FF6B35] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(weeklyStats, 'program_clicks')}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Program Clicks</div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-[#9B59B6]/10 to-[#8E44AD]/10 rounded-xl p-4 border border-[#9B59B6]/20">
+                  <div className="text-center">
+                    <BookOpen className="h-8 w-8 text-[#9B59B6] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(weeklyStats, 'ebook_clicks')}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Ebook Clicks</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
 
-        {/* Total Stats */}
-        <div className="bg-gradient-to-r from-[#E63946]/10 to-[#FFD700]/10 rounded-2xl p-4 mb-4 border border-[#E63946]/20">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-white font-orbitron animate-pulse">
-              {totalClicks}
-            </div>
-            <div className="text-[#D3D3D3] text-sm">Total Clicks Today</div>
-          </div>
-        </div>
+              <div className="bg-[#1A1A1A] rounded-xl p-4 border border-[#333]">
+                <h3 className="text-lg font-semibold text-white mb-4 font-orbitron">Daily Breakdown (Last 7 Days)</h3>
+                <div className="space-y-2">
+                  {weeklyStats.slice().reverse().map((day, index) => (
+                    <div key={index} className="flex justify-between items-center p-2 bg-[#2A2A2A] rounded-lg">
+                      <span className="text-[#D3D3D3] text-sm">{formatDate(day.date)}</span>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-[#28A745]">{day.unique_visitors} visitors</span>
+                        <span className="text-[#E63946]">{day.total_clicks} clicks</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 mb-6">
-          <button
-            onClick={clearTodayData}
-            className="flex-1 bg-[#E63946]/20 hover:bg-[#E63946]/30 text-[#E63946] border border-[#E63946]/30 rounded-xl px-4 py-2 font-semibold transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2"
-          >
-            <Trash2 className="h-4 w-4" />
-            Clear Data
-          </button>
+            <TabsContent value="monthly" className="mt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-gradient-to-r from-[#28A745]/10 to-[#20C997]/10 rounded-xl p-4 border border-[#28A745]/20">
+                  <div className="text-center">
+                    <Users className="h-8 w-8 text-[#28A745] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(monthlyStats, 'unique_visitors')}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Monthly Visitors</div>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-r from-[#E63946]/10 to-[#FFD700]/10 rounded-xl p-4 border border-[#E63946]/20">
+                  <div className="text-center">
+                    <MousePointer className="h-8 w-8 text-[#E63946] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(monthlyStats, 'total_clicks')}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Monthly Clicks</div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-[#FF6B35]/10 to-[#F7931E]/10 rounded-xl p-4 border border-[#FF6B35]/20">
+                  <div className="text-center">
+                    <TrendingUp className="h-8 w-8 text-[#FF6B35] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(monthlyStats, 'program_clicks')}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Program Clicks</div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-[#9B59B6]/10 to-[#8E44AD]/10 rounded-xl p-4 border border-[#9B59B6]/20">
+                  <div className="text-center">
+                    <BookOpen className="h-8 w-8 text-[#9B59B6] mx-auto mb-2" />
+                    <div className="text-2xl font-bold text-white font-orbitron">
+                      {calculateTotal(monthlyStats, 'ebook_clicks')}
+                    </div>
+                    <div className="text-[#D3D3D3] text-xs">Ebook Clicks</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#1A1A1A] rounded-xl p-4 border border-[#333]">
+                <h3 className="text-lg font-semibold text-white mb-4 font-orbitron">Daily Breakdown (Last 30 Days)</h3>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {monthlyStats.slice().reverse().map((day, index) => (
+                    <div key={index} className="flex justify-between items-center p-2 bg-[#2A2A2A] rounded-lg">
+                      <span className="text-[#D3D3D3] text-sm">{formatDate(day.date)}</span>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-[#28A745]">{day.unique_visitors} visitors</span>
+                        <span className="text-[#E63946]">{day.total_clicks} clicks</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        )}
+
+        {/* Action Button */}
+        <div className="flex justify-center mt-6">
           <button
             onClick={onClose}
-            className="flex-1 bg-[#2A2A2A] hover:bg-[#3A3A3A] text-white rounded-xl px-4 py-2 font-semibold transition-all duration-200 hover:scale-105"
+            className="bg-[#E63946] hover:bg-[#E63946]/80 text-white rounded-xl px-6 py-3 font-semibold transition-all duration-200 hover:scale-105"
           >
-            Close
+            Close Analytics
           </button>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center pt-4 border-t border-[#333]">
-          <p className="text-[#888] text-xs font-inter">
-            Stats reset daily • Keep exploring our programs! 🚀
-          </p>
         </div>
       </div>
     </div>
