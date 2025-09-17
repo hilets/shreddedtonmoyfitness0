@@ -222,14 +222,14 @@ const Transformation = () => {
           </div>
         ) : (
           <div 
-            className="px-6 md:px-8 animate-fade-in cursor-pointer"
+            className="px-6 md:px-8 animate-fade-in cursor-zoom-out"
             onClick={() => setExpandedImage(null)}
           >
-            <div className="flex justify-center items-center h-[600px]">
+            <div className="flex justify-center items-center w-full h-[28rem] sm:h-[36rem] md:h-[44rem] lg:h-[52rem]">
               <img
                 src={transformationImages.find(img => img.id === expandedImage)?.src}
                 alt={transformationImages.find(img => img.id === expandedImage)?.alt}
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-scale-in"
+                className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl animate-enter transition-transform duration-500 ease-out"
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
