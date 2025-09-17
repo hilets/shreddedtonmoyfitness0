@@ -202,15 +202,15 @@ const Transformation = () => {
                            className="w-full h-48 object-cover cursor-pointer transition-transform duration-300"
                            onClick={() => setExpandedImage(image.id)}
                          />
-                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                         <div className="absolute bottom-4 left-4 right-4">
-                           <div className="text-white text-sm font-bold">
-                             Client Transformation #{image.id}
-                           </div>
-                           <div className="text-[#FFD700] text-xs font-medium">
-                             Amazing Results Achieved
-                           </div>
-                         </div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                          <div className="absolute bottom-4 left-4 right-4 pointer-events-none">
+                            <div className="text-white text-sm font-bold">
+                              Client Transformation #{image.id}
+                            </div>
+                            <div className="text-[#FFD700] text-xs font-medium">
+                              Amazing Results Achieved
+                            </div>
+                          </div>
                        </div>
                     </div>
                   </CarouselItem>
