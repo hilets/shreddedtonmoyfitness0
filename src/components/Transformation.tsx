@@ -233,7 +233,7 @@ const Transformation = () => {
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setExpandedImage(null)}
         >
-          <div className="relative max-w-2xl max-h-full">
+          <div className="relative max-w-5xl max-h-full">
             <button
               onClick={() => setExpandedImage(null)}
               className="absolute -top-10 right-0 text-white hover:text-[#FFD700] transition-colors z-10"
@@ -243,7 +243,7 @@ const Transformation = () => {
             <img
               src={transformationImages.find(img => img.id === expandedImage)?.src}
               alt={transformationImages.find(img => img.id === expandedImage)?.alt}
-              className="max-w-full max-h-[70vh] object-contain rounded-lg"
+              className="max-w-full max-h-[85vh] object-contain rounded-lg"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
