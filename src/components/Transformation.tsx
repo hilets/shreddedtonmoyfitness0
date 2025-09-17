@@ -188,37 +188,53 @@ const Transformation = () => {
           </p>
         </div>
 
-        <div className="relative px-6 md:px-8">
-          <Carousel className="w-full">
-            <CarouselContent className="-ml-4">
-              {transformationImages.map((image) => (
-                <CarouselItem key={image.id} className="pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <div className="bg-[#0F0F0F] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                     <div className="relative">
-                       <img 
-                         src={image.src}
-                         alt={image.alt}
-                         className="w-full h-48 object-cover cursor-pointer transition-transform duration-300"
-                         onClick={() => setExpandedImage(image.id)}
-                       />
-                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                       <div className="absolute bottom-4 left-4 right-4">
-                         <div className="text-white text-sm font-bold">
-                           Client Transformation #{image.id}
-                         </div>
-                         <div className="text-[#FFD700] text-xs font-medium">
-                           Amazing Results Achieved
+        {!expandedImage ? (
+          <div className="relative px-6 md:px-8">
+            <Carousel className="w-full">
+              <CarouselContent className="-ml-4">
+                {transformationImages.map((image) => (
+                  <CarouselItem key={image.id} className="pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    <div className="bg-[#0F0F0F] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                       <div className="relative">
+                         <img 
+                           src={image.src}
+                           alt={image.alt}
+                           className="w-full h-48 object-cover cursor-pointer transition-transform duration-300"
+                           onClick={() => setExpandedImage(image.id)}
+                         />
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                         <div className="absolute bottom-4 left-4 right-4">
+                           <div className="text-white text-sm font-bold">
+                             Client Transformation #{image.id}
+                           </div>
+                           <div className="text-[#FFD700] text-xs font-medium">
+                             Amazing Results Achieved
+                           </div>
                          </div>
                        </div>
-                     </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="bg-[#E63946] hover:bg-[#D32F3F] text-white border-none -left-4 md:-left-8 h-10 w-10 z-10" />
-            <CarouselNext className="bg-[#E63946] hover:bg-[#D32F3F] text-white border-none -right-4 md:-right-8 h-10 w-10 z-10" />
-          </Carousel>
-        </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="bg-[#E63946] hover:bg-[#D32F3F] text-white border-none -left-4 md:-left-8 h-10 w-10 z-10" />
+              <CarouselNext className="bg-[#E63946] hover:bg-[#D32F3F] text-white border-none -right-4 md:-right-8 h-10 w-10 z-10" />
+            </Carousel>
+          </div>
+        ) : (
+          <div 
+            className="px-6 md:px-8 animate-fade-in cursor-pointer"
+            onClick={() => setExpandedImage(null)}
+          >
+            <div className="flex justify-center items-center h-[600px]">
+              <img
+                src={transformationImages.find(img => img.id === expandedImage)?.src}
+                alt={transformationImages.find(img => img.id === expandedImage)?.alt}
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-scale-in"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="text-center mt-8">
           <p className="text-[#D3D3D3] font-inter">
@@ -226,29 +242,6 @@ const Transformation = () => {
           </p>
         </div>
       </div>
-
-      {/* Image Modal */}
-      {expandedImage && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 animate-fade-in"
-          onClick={() => setExpandedImage(null)}
-        >
-          <div className="relative max-w-6xl max-h-full w-full animate-enter">
-            <button
-              onClick={() => setExpandedImage(null)}
-              className="absolute -top-10 right-0 text-white hover:text-[#FFD700] transition-colors z-10"
-            >
-              <X size={32} />
-            </button>
-            <img
-              src={transformationImages.find(img => img.id === expandedImage)?.src}
-              alt={transformationImages.find(img => img.id === expandedImage)?.alt}
-              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl transition-transform duration-300"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-        </div>
-      )}
     </section>
   );
 };
