@@ -230,10 +230,10 @@ const Transformation = () => {
       {/* Image Modal */}
       {expandedImage && (
         <div 
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setExpandedImage(null)}
         >
-          <div className="relative max-w-5xl max-h-full">
+          <div className="relative max-w-6xl max-h-full w-full animate-enter">
             <button
               onClick={() => setExpandedImage(null)}
               className="absolute -top-10 right-0 text-white hover:text-[#FFD700] transition-colors z-10"
@@ -243,7 +243,7 @@ const Transformation = () => {
             <img
               src={transformationImages.find(img => img.id === expandedImage)?.src}
               alt={transformationImages.find(img => img.id === expandedImage)?.alt}
-              className="max-w-full max-h-[85vh] object-contain rounded-lg"
+              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl transition-transform duration-300"
               onClick={(e) => e.stopPropagation()}
             />
           </div>
