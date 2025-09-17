@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { X } from "lucide-react";
 
 const Transformation = () => {
+  const [expandedImage, setExpandedImage] = useState<number | null>(null);
   // Updated transformation images with new Cloudinary URLs
   const transformationImages = [
     {
@@ -191,22 +194,23 @@ const Transformation = () => {
               {transformationImages.map((image) => (
                 <CarouselItem key={image.id} className="pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                   <div className="bg-[#0F0F0F] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                    <div className="relative">
-                      <img 
-                        src={image.src}
-                        alt={image.alt}
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <div className="text-white text-sm font-bold">
-                          Client Transformation #{image.id}
-                        </div>
-                        <div className="text-[#FFD700] text-xs font-medium">
-                          Amazing Results Achieved
-                        </div>
-                      </div>
-                    </div>
+                     <div className="relative">
+                       <img 
+                         src={image.src}
+                         alt={image.alt}
+                         className="w-full h-48 object-cover cursor-pointer transition-transform duration-300"
+                         onClick={() => setExpandedImage(image.id)}
+                       />
+                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                       <div className="absolute bottom-4 left-4 right-4">
+                         <div className="text-white text-sm font-bold">
+                           Client Transformation #{image.id}
+                         </div>
+                         <div className="text-[#FFD700] text-xs font-medium">
+                           Amazing Results Achieved
+                         </div>
+                       </div>
+                     </div>
                   </div>
                 </CarouselItem>
               ))}
@@ -222,6 +226,29 @@ const Transformation = () => {
           </p>
         </div>
       </div>
+
+      {/* Image Modal */}
+      {expandedImage && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-full">
+            <button
+              onClick={() => setExpandedImage(null)}
+              className="absolute -top-10 right-0 text-white hover:text-[#FFD700] transition-colors z-10"
+            >
+              <X size={32} />
+            </button>
+            <img
+              src={transformationImages.find(img => img.id === expandedImage)?.src}
+              alt={transformationImages.find(img => img.id === expandedImage)?.alt}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };
