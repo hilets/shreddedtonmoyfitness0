@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 
 const Transformation = () => {
   const [expandedImage, setExpandedImage] = useState<number | null>(null);
+  const [startIndex, setStartIndex] = useState(0);
   // Updated transformation images with new Cloudinary URLs
   const transformationImages = [
     {
@@ -190,7 +191,7 @@ const Transformation = () => {
 
         {!expandedImage ? (
           <div className="relative px-6 md:px-8">
-            <Carousel className="w-full">
+            <Carousel className="w-full" opts={{ startIndex }}>
               <CarouselContent className="-ml-4">
                 {transformationImages.map((image) => (
                   <CarouselItem key={image.id} className="pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
@@ -200,7 +201,7 @@ const Transformation = () => {
                            src={image.src}
                            alt={image.alt}
                            className="w-full h-48 object-cover cursor-pointer transition-transform duration-300"
-                           onClick={() => setExpandedImage(image.id)}
+                           onClick={() => { setStartIndex(transformationImages.findIndex(img => img.id === image.id)); setExpandedImage(image.id); }}
                          />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                           <div className="absolute bottom-4 left-4 right-4 pointer-events-none">
