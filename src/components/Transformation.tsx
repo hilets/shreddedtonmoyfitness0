@@ -225,13 +225,13 @@ const Transformation = () => {
             className="px-6 md:px-8 animate-fade-in cursor-zoom-out relative"
             onClick={() => setExpandedImage(null)}
           >
-            <button
-              onClick={() => setExpandedImage(null)}
-              className="fixed top-4 right-4 z-50 bg-gradient-to-r from-red-600 to-black hover:from-red-700 hover:to-gray-900 text-white rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110"
-            >
-              <X size={24} />
-            </button>
-            <div className="flex justify-center items-center w-full h-[28rem] sm:h-[36rem] md:h-[44rem] lg:h-[52rem]">
+            <div className="flex justify-center items-center w-full h-[28rem] sm:h-[36rem] md:h-[44rem] lg:h-[52rem] relative">
+              <button
+                onClick={() => setExpandedImage(null)}
+                className="absolute top-2 right-2 md:top-4 md:right-4 z-50 bg-gradient-to-r from-red-600 to-black hover:from-red-700 hover:to-gray-900 text-white rounded-full p-2 md:p-3 shadow-lg transition-all duration-300 hover:scale-110"
+              >
+                <X size={20} className="md:w-6 md:h-6" />
+              </button>
               <img
                 src={transformationImages.find(img => img.id === expandedImage)?.src}
                 alt={transformationImages.find(img => img.id === expandedImage)?.alt}
