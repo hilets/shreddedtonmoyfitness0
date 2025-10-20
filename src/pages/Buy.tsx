@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Copy, MessageCircle, CheckCircle, Phone } from "lucide-react";
 import { toast } from "sonner";
+import ChatbotButton from "@/components/ChatbotButton";
 
 const Buy = () => {
   const [searchParams] = useSearchParams();
@@ -179,6 +180,7 @@ const Buy = () => {
           </CardContent>
         </Card>
       </div>
+      <ChatbotButton />
     </div>
   );
 };

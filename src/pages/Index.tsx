@@ -13,6 +13,7 @@ import MobileNav from "@/components/MobileNav";
 import DesktopNav from "@/components/DesktopNav";
 
 import { trackVisitor } from "@/utils/trackingUtils";
+import ChatbotButton from "@/components/ChatbotButton";
 
 const Index = () => {
   useEffect(() => {
@@ -50,7 +51,7 @@ const Index = () => {
       <div data-scroll-section>
         <Footer />
       </div>
-      
+      <ChatbotButton />
     </div>
   );
 };
