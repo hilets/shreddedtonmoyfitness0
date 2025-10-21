@@ -2,6 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Award, Users, Clock, Star } from "lucide-react";
 import { useState, useEffect } from "react";
+import certificate from "@/assets/issa-certificate.jpg";
 
 const AboutTrainer = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -138,6 +139,25 @@ const AboutTrainer = () => {
                   <div className="text-sm text-[#D3D3D3]">Support Available</div>
                 </div>
               </div>
+            </div>
+            
+            {/* ISSA Certificate Section */}
+            <div className="mt-8 p-6 bg-gradient-to-br from-[#FFD700]/10 to-[#E63946]/10 rounded-xl border border-[#FFD700]/20">
+              <div className="flex items-center gap-3 mb-4">
+                <Award className="h-8 w-8 text-[#FFD700]" />
+                <h3 className="text-2xl font-bold text-white font-orbitron">ISSA Certified Master Trainer</h3>
+              </div>
+              <div className="relative group cursor-pointer">
+                <img 
+                  src={certificate} 
+                  alt="ISSA Master Trainer Certificate - Tonmoy Saha" 
+                  className="w-full rounded-lg shadow-2xl transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <p className="text-sm text-[#D3D3D3] mt-4 text-center font-inter">
+                International Sports Sciences Association Certified
+              </p>
             </div>
           </div>
         </div>
