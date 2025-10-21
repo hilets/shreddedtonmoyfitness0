@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +40,20 @@ const ChatbotButton = () => {
     }
   }, [messages]);
 
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!dragRef.current) return;
+    const deltaX = e.clientX - dragRef.current.startX;
+    const deltaY = e.clientY - dragRef.current.startY;
+    setPosition({
+      x: Math.max(0, Math.min(window.innerWidth - 80, dragRef.current.initialX + deltaX)),
+      y: Math.max(0, Math.min(window.innerHeight - 80, dragRef.current.initialY + deltaY)),
+    });
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".chat-dialog")) return;
     setIsDragging(true);
@@ -51,20 +65,6 @@ const ChatbotButton = () => {
     };
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !dragRef.current) return;
-    const deltaX = e.clientX - dragRef.current.startX;
-    const deltaY = e.clientY - dragRef.current.startY;
-    setPosition({
-      x: Math.max(0, Math.min(window.innerWidth - 80, dragRef.current.initialX + deltaX)),
-      y: Math.max(0, Math.min(window.innerHeight - 80, dragRef.current.initialY + deltaY)),
-    });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
@@ -74,7 +74,7 @@ const ChatbotButton = () => {
         document.removeEventListener("mouseup", handleMouseUp);
       };
     }
-  }, [isDragging]);
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   const sendMessage = async (messageText?: string) => {
     const textToSend = messageText || input.trim();
