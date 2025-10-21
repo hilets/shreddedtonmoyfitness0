@@ -27,7 +27,7 @@ const Buy = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const bkashNumber = "01911077020";
+  const bkashNumber = "01932399943";
   const whatsappNumber = "+880 1911-077020";
 
   const copyToClipboard = (text: string) => {

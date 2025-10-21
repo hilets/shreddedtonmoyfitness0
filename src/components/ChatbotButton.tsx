@@ -54,6 +54,23 @@ const ChatbotButton = () => {
     setIsDragging(false);
   }, []);
 
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!dragRef.current) return;
+    const t = e.touches[0];
+    if (!t) return;
+    e.preventDefault();
+    const deltaX = t.clientX - dragRef.current.startX;
+    const deltaY = t.clientY - dragRef.current.startY;
+    setPosition({
+      x: Math.max(0, Math.min(window.innerWidth - 80, dragRef.current.initialX + deltaX)),
+      y: Math.max(0, Math.min(window.innerHeight - 80, dragRef.current.initialY + deltaY)),
+    });
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".chat-dialog")) return;
     setIsDragging(true);
@@ -65,16 +82,32 @@ const ChatbotButton = () => {
     };
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    if ((e.target as HTMLElement).closest('.chat-dialog')) return;
+    setIsDragging(true);
+    dragRef.current = {
+      startX: t.clientX,
+      startY: t.clientY,
+      initialX: position.x,
+      initialY: position.y,
+    };
+  };
+
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
       return () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove as any);
+        document.removeEventListener('touchend', handleTouchEnd);
       };
     }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
   const sendMessage = async (messageText?: string) => {
     const textToSend = messageText || input.trim();
@@ -158,6 +191,7 @@ const ChatbotButton = () => {
           cursor: isDragging ? "grabbing" : "grab",
         }}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         className="touch-none"
       >
         <Button
